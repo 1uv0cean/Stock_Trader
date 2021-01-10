@@ -12,7 +12,7 @@ from selenium.webdriver.chrome.options import Options
 #변동성 돌파 전략 + 이동평균선 5일 + 이동평균선 10일 3가지 전략 활용
 
 def dbgout(message):
-    """인자로 받은 문자열을 파이썬 셸과 슬랙으로 동시에 출력한다."""
+    """인자로 받은 문자열을 파이썬 셸에 출력한다."""
     print(datetime.now().strftime('[%m/%d %H:%M:%S]'), message)
     strbuf = datetime.now().strftime('[%m/%d %H:%M:%S] ') + message
 
