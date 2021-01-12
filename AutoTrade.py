@@ -11,10 +11,12 @@ from selenium.webdriver.chrome.options import Options
 
 #변동성 돌파 전략 + 이동평균선 5일 + 이동평균선 10일 3가지 전략 활용
 
+slack = Slacker('xoxb-1619401546322-1604635932503-2nY0YXyHiQKUmbmvmZJj1sIh') # slack 인증코드
 def dbgout(message):
-    """인자로 받은 문자열을 파이썬 셸에 출력한다."""
+    """인자로 받은 문자열을 파이썬 셸과 슬랙으로 동시에 출력한다."""
     print(datetime.now().strftime('[%m/%d %H:%M:%S]'), message)
     strbuf = datetime.now().strftime('[%m/%d %H:%M:%S] ') + message
+    slack.chat.post_message('#stock', strbuf) # slack 채널
 
 def printlog(message, *args):
     """인자로 받은 문자열을 파이썬 셸에 출력한다."""
@@ -135,7 +137,7 @@ def get_target_price(code):
             today_open = lastday[3]
         lastday_high = lastday[1]
         lastday_low = lastday[2]
-        target_price = today_open + (lastday_high - lastday_low) * 0.2
+        target_price = today_open + (lastday_high - lastday_low) * 0.4
         return target_price
     except Exception as ex:
         dbgout("`get_target_price() -> exception! " + str(ex) + "`")
@@ -273,7 +275,7 @@ if __name__ == '__main__':
                 sys.exit(0)
             if t_9 < t_now < t_start and soldout == False:
                 soldout = True
-                sell_all()
+                #sell_all()
             if t_start < t_now < t_sell :  # AM 09:05 ~ PM 03:15 : 매수
                 for sym in symbol_list:
                     if len(bought_list) < target_buy_count:
@@ -283,6 +285,7 @@ if __name__ == '__main__':
                     get_stock_balance('ALL')
                     time.sleep(5)
             if t_sell < t_now < t_exit:  # PM 03:15 ~ PM 03:20 : 일괄 매도
+                sell_all()
                 if sell_all() == True:
                     dbgout('`sell_all() returned True -> self-destructed!`')
                     sys.exit(0)
